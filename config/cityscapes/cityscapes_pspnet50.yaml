@@ -8,16 +8,21 @@ TRAIN:
   arch: psp
   layers: 50
   sync_bn: True  # adopt syncbn or not
-  train_h: 713
-  train_w: 713
-  scale_min: 0.5  # minimum random scale
-  scale_max: 2.0  # maximum random scale
+  #train_h: 713
+  train_h: 337
+  #train_w: 713
+  train_w: 337
+  #scale_min: 0.5
+  scale_min: 0.25  # minimum random scale
+  #scale_max: 2.0
+  scale_max: 1.0  # maximum random scale
   rotate_min: -10  # minimum random rotate
   rotate_max: 10  # maximum random rotate
   zoom_factor: 8  # zoom factor for final prediction during training, be in [1, 2, 4, 8]
   ignore_label: 255
   aux_weight: 0.4
-  train_gpu: [0, 1, 2, 3, 4, 5, 6, 7]
+  #train_gpu:[0,1,2,3,4,5,6,7]
+  train_gpu: [0]
   workers: 16  # data loader workers
   batch_size: 16  # batch size for training
   batch_size_val: 8  # batch size for validation during training, memory and speed tradeoff
@@ -44,9 +49,12 @@ Distributed:
 TEST:
   test_list: dataset/cityscapes/list/fine_val.txt
   split: val  # split in [train, val and test]
-  base_size: 2048  # based size for scaling
+  base_size: 2048
+  #base_size: 1024  # based size for scaling
   test_h: 713
+  #test_h: 337
   test_w: 713
+  #test_w: 337
   scales: [1.0]  # evaluation scales, ms as [0.5, 0.75, 1.0, 1.25, 1.5, 1.75]
   has_prediction: False  # has prediction already or not
   index_start: 0  # evaluation start index in list
