@@ -85,6 +85,9 @@ def main():
     if args.arch == 'psp':
         from model.pspnet import PSPNet
         model = PSPNet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, pretrained=False)
+        # My code
+        #model = PSPNet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, pretrained=True)
+        # My code
     elif args.arch == 'psa':
         from model.psanet import PSANet
         model = PSANet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, compact=args.compact,
@@ -96,6 +99,10 @@ def main():
     if os.path.isfile(args.model_path):
         logger.info("=> loading checkpoint '{}'".format(args.model_path))
         checkpoint = torch.load(args.model_path)
+        # My code
+        #model_path = './initmodel/resnet18-v2.pth'
+        #model.load_state_dict(torch.load(model_path), strict=False)
+        # My code
         model.load_state_dict(checkpoint['state_dict'], strict=False)
         logger.info("=> loaded checkpoint '{}'".format(args.model_path))
     else:

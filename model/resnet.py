@@ -1,4 +1,4 @@
-import torch
+import torch 
 import torch.nn as nn
 import math
 import torch.utils.model_zoo as model_zoo
@@ -163,7 +163,7 @@ class ResNet(nn.Module):
         return x
 
 
-def resnet18(pretrained=False, **kwargs):
+def resnet18(pretrained=True, **kwargs):
     """Constructs a ResNet-18 model.
 
     Args:
@@ -171,7 +171,8 @@ def resnet18(pretrained=False, **kwargs):
     """
     model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet18']))
+        model_path = './initmodel/resnet18-v2.pth'
+        model.load_state_dict(torch.load(model_path), strict=False)
     return model
 
 
