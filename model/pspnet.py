@@ -44,7 +44,7 @@ class PSPNet(nn.Module):
             resnet = models.resnet50(pretrained=pretrained)
         elif layers == 101:
             resnet = models.resnet101(pretrained=pretrained)
-	# My code
+	    # My code
         elif layers == 18:
             resnet = models.resnet18(pretrained=pretrained)
         # My code
