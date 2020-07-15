@@ -14,7 +14,7 @@ TRAIN:
 
   arch: psp
 
-  layers: 50
+  layers: 18
 
   sync_bn: True  # adopt syncbn or not
 
@@ -40,7 +40,7 @@ TRAIN:
 
   workers: 16  # data loader workers
 
-  batch_size: 16  # batch size for training
+  batch_size: 8  # batch size for training
 
   batch_size_val: 8  # batch size for validation during training, memory and speed tradeoff
 
@@ -90,11 +90,11 @@ TEST:
 
   split: val  # split in [train, val and test]
 
-  base_size: 1024  # based size for scaling
+  base_size: 2048  # based size for scaling
 
-  test_h: 713
+  test_h: 1024
 
-  test_w: 713
+  test_w: 2048
 
   scales: [1.0]  # evaluation scales, ms as [0.5, 0.75, 1.0, 1.25, 1.5, 1.75]
 
@@ -107,6 +107,7 @@ TEST:
   test_gpu: [0]
 
   model_path: exp/cityscapes/pspnet18/model/train_epoch_200.pth  # evaluation model path
+  #model_path: initmodel/resnet18_v2.pth
 
   save_folder: exp/cityscapes/pspnet18/result/epoch_200/val/ss  # results save folder
 
