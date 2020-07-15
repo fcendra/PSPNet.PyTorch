@@ -12,7 +12,7 @@ import torch.nn.parallel
 import torch.utils.data
 
 from util import dataset, transform, config
-from util.util import AverageMeter, intersectionAndUnion, check_makedirs, transfer_ckpt,colorize
+from util.util import AverageMeter, intersectionAndUnion, check_makedirs,colorize
 
 cv2.ocl.setUseOpenCL(False)
 import sys
@@ -24,9 +24,9 @@ print(sys.path)
 
 def get_parser():
     parser = argparse.ArgumentParser(description='PyTorch Semantic Segmentation')
-    parser.add_argument('--config', type=str, default='config/cityscapes/cityscapes_pspnet18_sd.yaml',
+    parser.add_argument('--config', type=str, default='config/cityscapes/cityscapes_pspnet18.yaml',
                         help='config file')
-    parser.add_argument('opts', help='see config/cityscapes/cityscapes_pspnet18_sd.yaml for all options', default=None,
+    parser.add_argument('opts', help='see config/cityscapes/cityscapes_pspnet18.yaml for all options', default=None,
                         nargs=argparse.REMAINDER)
     args = parser.parse_args()
     assert args.config is not None
@@ -114,7 +114,7 @@ def main():
     args = get_parser()
     # check(args)
     logger = get_logger()
-    os.environ["CUDA_VISIBLE_DEVICES"] = ','.join(str(x) for x in args.gen_gpu)
+    os.environ["CUDA_VISIBLE_DEVICES"] = ','.join(str(x) for x in args.test_gpu)
     logger.info(args)
     logger.info("=> creating model ...")
     logger.info("Classes: {}".format(args.classes))
@@ -128,9 +128,9 @@ def main():
     gray_folder = os.path.join(args.save_folder, 'gray')
     color_folder = os.path.join(args.save_folder, 'color')
 
-    test_transform = transform.Compose([transform.ToTensor(), transform.Normalize(mean=mean, std=std)])
-    test_data = dataset.SemData(split='test', data_root=args.data_root,
-                                data_list=args.demo_dir,
+    test_transform = transform.Compose([transform.ToTensor()])
+    test_data = dataset.SemData(split=args.split, data_root=args.data_root,
+                                data_list=args.test_list,
                                 transform=test_transform)
     index_start = args.index_start
     if args.index_step == 0:
@@ -138,29 +138,30 @@ def main():
     else:
         index_end = min(index_start + args.index_step, len(test_data.data_list))
     test_data.data_list = test_data.data_list[index_start:index_end]
-    test_loader = torch.utils.data.DataLoader(test_data, batch_size=args.batch_size_gen, shuffle=False,
+    test_loader = torch.utils.data.DataLoader(test_data, batch_size=1, shuffle=False,
                                               num_workers=args.workers,
                                               pin_memory=True)
     colors = np.loadtxt(args.colors_path).astype('uint8')
-
+    names = [line.rstrip('\n') for line in open(args.names_path)] 
     if not args.has_prediction:
-        from model.pspnet_18 import PSPNet
+        from model.pspnet18 import PSPNet
         model = PSPNet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, flow=False,
                        pretrained=False)
 
         logger.info(model)
         model = torch.nn.DataParallel(model).cuda()
         cudnn.benchmark = True
-        if os.path.isfile(args.ckpt_path):
-            logger.info("=> loading checkpoint '{}'".format(args.ckpt_path))
-            checkpoint = torch.load(args.ckpt_path)
-            student_ckpt = transfer_ckpt(checkpoint)
-            a, b = model.load_state_dict(student_ckpt, strict=False)
-            print('unexpected keys:', a)
-            print('missing keys:', b)
-            logger.info("=> loaded checkpoint '{}'".format(args.ckpt_path))
+        if os.path.isfile(args.model_path):
+            logger.info("=> loading checkpoint '{}'".format(args.model_path))
+            checkpoint = torch.load(args.model_path)
+            #student_ckpt = transfer_ckpt(checkpoint)
+            #a, b = model.load_state_dict(student_ckpt, strict=False)
+            #print('unexpected keys:', a)
+            #print('missing keys:', b)
+            model.load_state_dict(checkpoint['state_dict'], strict=False)
+            logger.info("=> loaded checkpoint '{}'".format(args.model_path))
         else:
-            raise RuntimeError("=> no checkpoint found at '{}'".format(args.ckpt_path))
+            raise RuntimeError("=> no checkpoint found at '{}'".format(args.model_path))
 
         test(test_loader, test_data.data_list, model,  gray_folder, colors,color_folder)
     # if args.split != 'test':
@@ -221,7 +222,7 @@ def test(test_loader, data_list, model, gray_folder,
             gray = np.uint8(prediction[g])
             color = colorize(gray, colors)
 
-            image_path, _ = data_list[i * args.batch_size_gen + g]
+            image_path, _ = data_list[i]
             image_name = image_path.split('/')[-1].split('.')[0]
             gray_path = os.path.join(gray_folder, image_name + '.png')
             cv2.imwrite(gray_path, gray)
