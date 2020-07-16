@@ -66,7 +66,7 @@ TRAIN:
 
   weight:  # path to initial weight (default: none)
 
-  resume: exp/cityscapes/pspnet18/model/train_epoch_153.pth  # path to latest checkpoint (default: none)
+  resume: exp/cityscapes/pspnet18/model/train_epoch_200.pth  # path to latest checkpoint (default: none)
 
   evaluate: False  # evaluate on validation set, extra gpu memory needed and small batch_size_val is recommend
 
