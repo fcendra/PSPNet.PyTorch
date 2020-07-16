@@ -164,8 +164,8 @@ def main():
             raise RuntimeError("=> no checkpoint found at '{}'".format(args.model_path))
 
         test(test_loader, test_data.data_list, model,  gray_folder, colors,color_folder)
-    # if args.split != 'test':
-    #     cal_acc(test_data.data_list, gray_folder, args.classes, names)
+    if args.split != 'test':
+        cal_acc(test_data.data_list, gray_folder, args.classes, names)
 
 
 def net_process(model, image, mean, std=None, flip=True):
