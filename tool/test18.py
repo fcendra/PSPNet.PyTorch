@@ -163,7 +163,7 @@ def main():
         else:
             raise RuntimeError("=> no checkpoint found at '{}'".format(args.model_path))
 
-        test(test_loader, test_data.data_list, model,  gray_folder, colors,color_folder)
+        test(test_loader, test_data.data_list, model, args.classes, mean, std, args.base_size, args.test_h, args.test_w, args.scales, gray_folder, color_folder, colors)
     if args.split != 'test':
         cal_acc(test_data.data_list, gray_folder, args.classes, names)
 
