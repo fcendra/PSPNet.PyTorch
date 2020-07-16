@@ -10,7 +10,7 @@ import torch.nn.functional as F
 import torch.nn.parallel
 import torch.utils.data
 
-from util import config, dataset, trasnform
+from util import config, dataset, transform
 from util.util import colorize
 
 cv2.ocl.setUseOpenCL(False)
@@ -83,7 +83,7 @@ def main():
     colors = np.loadtxt(args.colors_path).astype('uint8')
 
     if args.arch == 'psp':
-        from model.pspnet import PSPNet
+        from model.pspnet18 import PSPNet
         model = PSPNet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, pretrained=False)
         # My code
         #model = PSPNet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, pretrained=True)
