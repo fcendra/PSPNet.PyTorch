@@ -8,16 +8,18 @@ TRAIN:
   arch: psp
   layers: 50
   sync_bn: True  # adopt sync_bn or not
-  train_h: 473
-  train_w: 473
-  scale_min: 0.5  # minimum random scale
-  scale_max: 2.0  # maximum random scale
+  train_h: 9
+  train_w: 9
+  #scale_min: 0.5  # minimum random scale
+  scale_min: 0.25
+  #scale_max: 2.0  # maximum random scale
+  scale_max: 1.0
   rotate_min: -10  # minimum random rotate
   rotate_max: 10  # maximum random rotate
   zoom_factor: 8  # zoom factor for final prediction during training, be in [1, 2, 4, 8]
   ignore_label: 255
   aux_weight: 0.4
-  train_gpu: [0, 1, 2, 3, 4, 5, 6, 7]
+  train_gpu: [0]
   workers: 16  # data loader workers
   batch_size: 16  # batch size for training
   batch_size_val: 8  # batch size for validation during training, memory and speed tradeoff
@@ -45,8 +47,8 @@ TEST:
   test_list: dataset/ade20k/list/validation.txt
   split: val  # split in [train, val and test]
   base_size: 512  # based size for scaling
-  test_h: 473
-  test_w: 473
+  test_h: 9
+  test_w: 9
   scales: [1.0]  # evaluation scales, ms as [0.5, 0.75, 1.0, 1.25, 1.5, 1.75]
   has_prediction: False  # has prediction already or not
   index_start: 0  # evaluation start index in list

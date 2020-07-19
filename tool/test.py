@@ -113,12 +113,12 @@ def main():
         if os.path.isfile(args.model_path):
             logger.info("=> loading checkpoint '{}'".format(args.model_path))
             checkpoint = torch.load(args.model_path)
-            #model.load_state_dict(checkpoint['state_dict'], strict=False)
+            model.load_state_dict(checkpoint['state_dict'], strict=False)
             # My code
-            state_dict = model.state_dict()
-            for k1, k2 in zip(state_dict.keys(), checkpoint.keys()):
-                state_dict[k1] = checkpoint[k2]
-            model.load_state_dict(state_dict)
+            #state_dict = model.state_dict()
+            #for k1, k2 in zip(state_dict.keys(), checkpoint.keys()):
+            #    state_dict[k1] = checkpoint[k2]
+            #model.load_state_dict(state_dict)
             # My code
             logger.info("=> loaded checkpoint '{}'".format(args.model_path))
         else:
