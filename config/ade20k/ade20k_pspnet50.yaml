@@ -21,7 +21,7 @@ TRAIN:
   aux_weight: 0.4
   train_gpu: [0]
   workers: 16  # data loader workers
-  batch_size: 8  # batch size for training
+  batch_size: 16  # batch size for training
   batch_size_val: 8  # batch size for validation during training, memory and speed tradeoff
   base_lr: 0.01
   epochs: 100
@@ -33,7 +33,7 @@ TRAIN:
   print_freq: 10
   save_freq: 1
   save_path: exp/ade20k/pspnet50/model
-  weight:  # path to initial weight (default: none)
+  weight: initmodel/resnet50_v2.pth # path to initial weight (default: none)
   resume:  # path to latest checkpoint (default: none)
   evaluate: False  # evaluate on validation set, extra gpu memory needed and small batch_size_val is recommend
 Distributed:

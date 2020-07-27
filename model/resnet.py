@@ -191,7 +191,7 @@ def resnet34(pretrained=False, **kwargs):
     return model
 
 
-def resnet50(pretrained=False, **kwargs):
+def resnet50(pretrained=True, **kwargs):
     """Constructs a ResNet-50 model.
 
     Args:
@@ -199,7 +199,7 @@ def resnet50(pretrained=False, **kwargs):
     """
     model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
     if pretrained:
-        # model.load_state_dict(model_zoo.load_url(model_urls['resnet50']))
+        #model.load_state_dict(model_zoo.load_url(model_urls['resnet50']))
         model_path = './initmodel/resnet50_v2.pth'
         model.load_state_dict(torch.load(model_path), strict=False)
     return model
