@@ -44,7 +44,7 @@ class PSPNet(nn.Module):
             resnet = models.resnet50(pretrained=pretrained)
         elif layers == 101:
             resnet = models.resnet101(pretrained=pretrained)
-	# My code
+	    # My code
         elif layers == 18:
             resnet = models.resnet18(pretrained=pretrained)
         # My code
@@ -114,7 +114,7 @@ class PSPNet(nn.Module):
 
 if __name__ == '__main__':
     import os
-    os.environ["CUDA_VISIBLE_DEVICES"] = '0, 1'
+    os.environ["CUDA_VISIBLE_DEVICES"] = '0, 1 '
     input = torch.rand(4, 3, 473, 473).cuda()
     model = PSPNet(layers=50, bins=(1, 2, 3, 6), dropout=0.1, classes=21, zoom_factor=1, use_ppm=True, pretrained=True).cuda()
     model.eval()

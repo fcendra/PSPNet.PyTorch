@@ -9,9 +9,9 @@ TRAIN:
   layers: 50
   sync_bn: True  # adopt syncbn or not
   #train_h: 713
-  train_h: 337
+  train_h: 9
   #train_w: 713
-  train_w: 337
+  train_w: 9
   #scale_min: 0.5
   scale_min: 0.25  # minimum random scale
   #scale_max: 2.0

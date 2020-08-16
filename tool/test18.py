@@ -12,15 +12,22 @@ import torch.nn.parallel
 import torch.utils.data
 
 from util import dataset, transform, config
-from util.util import AverageMeter, intersectionAndUnion, check_makedirs, colorize
+from util.util import AverageMeter, intersectionAndUnion, check_makedirs,colorize
 
 cv2.ocl.setUseOpenCL(False)
+import sys
+
+if '/hardware/yifanliu/models/research/deeplab' in sys.path:
+    sys.path.remove('/hardware/yifanliu/models/research/deeplab')
+print(sys.path)
 
 
 def get_parser():
     parser = argparse.ArgumentParser(description='PyTorch Semantic Segmentation')
-    parser.add_argument('--config', type=str, default='config/ade20k/ade20k_pspnet50.yaml', help='config file')
-    parser.add_argument('opts', help='see config/ade20k/ade20k_pspnet50.yaml for all options', default=None, nargs=argparse.REMAINDER)
+    parser.add_argument('--config', type=str, default='config/cityscapes/cityscapes_pspnet18.yaml',
+                        help='config file')
+    parser.add_argument('opts', help='see config/cityscapes/cityscapes_pspnet18.yaml for all options', default=None,
+                        nargs=argparse.REMAINDER)
     args = parser.parse_args()
     assert args.config is not None
     cfg = config.load_cfg_from_cfg_file(args.config)
@@ -40,18 +47,47 @@ def get_logger():
     return logger
 
 
+def predict_whole_img(net, image):
+    """
+         Predict the whole image w/o using multiple crops.
+         The scale specify whether rescale the input image before predicting the results.
+    """
+    start = time.time()
+    N_, C_, H_, W_ = image.shape
+
+    scaled_img = image
+    # scaled_img = torch.cat([image, image.flip(3)], 0)
+    with torch.no_grad():
+
+        full_prediction_ = net(scaled_img.cuda())
+
+
+    output = F.softmax(full_prediction_, dim=1)
+    # full_prediction_ = (output[0] + output[1].flip(2)) / 2
+    # full_prediction = full_prediction_['logits']
+    # full_prediction = F.upsample(input=full_prediction, size=(H_, W_), mode='bilinear', align_corners=True)
+
+
+    start = time.time()
+    # _, preds = torch.max(output.data.cpu(), dim=1)
+    preds = output.cpu().data.numpy().transpose(0, 2, 3, 1)
+
+    return preds
+
+
 def check(args):
     assert args.classes > 1
     assert args.zoom_factor in [1, 2, 4, 8]
     assert args.split in ['train', 'val', 'test']
-    if args.arch == 'psp':
+    if 'psp' in args.arch:
         assert (args.train_h - 1) % 8 == 0 and (args.train_w - 1) % 8 == 0
     elif args.arch == 'psa':
         if args.compact:
             args.mask_h = (args.train_h - 1) // (8 * args.shrink_factor) + 1
             args.mask_w = (args.train_w - 1) // (8 * args.shrink_factor) + 1
         else:
-            assert (args.mask_h is None and args.mask_w is None) or (args.mask_h is not None and args.mask_w is not None)
+            assert (args.mask_h is None and args.mask_w is None) or (
+                    args.mask_h is not None and args.mask_w is not None)
             if args.mask_h is None and args.mask_w is None:
                 args.mask_h = 2 * ((args.train_h - 1) // (8 * args.shrink_factor) + 1) - 1
                 args.mask_w = 2 * ((args.train_w - 1) // (8 * args.shrink_factor) + 1) - 1
@@ -64,10 +100,19 @@ def check(args):
         raise Exception('architecture not supported yet'.format(args.arch))
 
 
+ignore_label = 255
+id_to_trainid = {-1: ignore_label, 0: ignore_label, 1: ignore_label, 2: ignore_label,
+                 3: ignore_label, 4: ignore_label, 5: ignore_label, 6: ignore_label,
+                 7: 0, 8: 1, 9: ignore_label, 10: ignore_label, 11: 2, 12: 3, 13: 4,
+                 14: ignore_label, 15: ignore_label, 16: ignore_label, 17: 5,
+                 18: ignore_label, 19: 6, 20: 7, 21: 8, 22: 9, 23: 10, 24: 11, 25: 12, 26: 13, 27: 14,
+                 28: 15, 29: ignore_label, 30: ignore_label, 31: 16, 32: 17, 33: 18}
+
+
 def main():
     global args, logger
     args = get_parser()
-    check(args)
+    # check(args)
     logger = get_logger()
     os.environ["CUDA_VISIBLE_DEVICES"] = ','.join(str(x) for x in args.test_gpu)
     logger.info(args)
@@ -84,45 +129,40 @@ def main():
     color_folder = os.path.join(args.save_folder, 'color')
 
     test_transform = transform.Compose([transform.ToTensor()])
-    test_data = dataset.SemData(split=args.split, data_root=args.data_root, data_list=args.test_list, transform=test_transform)
+    test_data = dataset.SemData(split=args.split, data_root=args.data_root,
+                                data_list=args.test_list,
+                                transform=test_transform)
     index_start = args.index_start
     if args.index_step == 0:
         index_end = len(test_data.data_list)
     else:
         index_end = min(index_start + args.index_step, len(test_data.data_list))
     test_data.data_list = test_data.data_list[index_start:index_end]
-    test_loader = torch.utils.data.DataLoader(test_data, batch_size=1, shuffle=False, num_workers=args.workers, pin_memory=True)
+    test_loader = torch.utils.data.DataLoader(test_data, batch_size=1, shuffle=False,
+                                              num_workers=args.workers,
+                                              pin_memory=True)
     colors = np.loadtxt(args.colors_path).astype('uint8')
-    names = [line.rstrip('\n') for line in open(args.names_path)]
-
+    names = [line.rstrip('\n') for line in open(args.names_path)] 
     if not args.has_prediction:
-        if args.arch == 'psp':
-            from model.pspnet import PSPNet
-            model = PSPNet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, pretrained=False)
-            # My code
-            #model = PSPNet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, pretrained=True)
-            # My code
-        elif args.arch == 'psa':
-            from model.psanet import PSANet
-            model = PSANet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, compact=args.compact,
-                           shrink_factor=args.shrink_factor, mask_h=args.mask_h, mask_w=args.mask_w,
-                           normalization_factor=args.normalization_factor, psa_softmax=args.psa_softmax, pretrained=False)
+        from model.pspnet18 import PSPNet
+        model = PSPNet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, flow=False,
+                       pretrained=False)
+
         logger.info(model)
         model = torch.nn.DataParallel(model).cuda()
         cudnn.benchmark = True
         if os.path.isfile(args.model_path):
             logger.info("=> loading checkpoint '{}'".format(args.model_path))
             checkpoint = torch.load(args.model_path)
+            #student_ckpt = transfer_ckpt(checkpoint)
+            #a, b = model.load_state_dict(student_ckpt, strict=False)
+            #print('unexpected keys:', a)
+            #print('missing keys:', b)
             model.load_state_dict(checkpoint['state_dict'], strict=False)
-            # My code
-            #state_dict = model.state_dict()
-            #for k1, k2 in zip(state_dict.keys(), checkpoint.keys()):
-            #    state_dict[k1] = checkpoint[k2]
-            #model.load_state_dict(state_dict)
-            # My code
             logger.info("=> loaded checkpoint '{}'".format(args.model_path))
         else:
             raise RuntimeError("=> no checkpoint found at '{}'".format(args.model_path))
+
         test(test_loader, test_data.data_list, model, args.classes, mean, std, args.base_size, args.test_h, args.test_w, args.scales, gray_folder, color_folder, colors)
     if args.split != 'test':
         cal_acc(test_data.data_list, gray_folder, args.classes, names)
@@ -232,6 +272,17 @@ def test(test_loader, data_list, model, classes, mean, std, base_size, crop_h, c
     logger.info('<<<<<<<<<<<<<<<<< End Evaluation <<<<<<<<<<<<<<<<<')
 
 
+def id2trainId(label, reverse=False):
+    label_copy = label.copy()
+    if reverse:
+        for v, k in id_to_trainid.items():
+            label_copy[label == k] = v
+    else:
+        for k, v in id_to_trainid.items():
+            label_copy[label == k] = v
+    return label_copy
+
+
 def cal_acc(data_list, pred_folder, classes, names):
     intersection_meter = AverageMeter()
     union_meter = AverageMeter()
@@ -239,14 +290,17 @@ def cal_acc(data_list, pred_folder, classes, names):
 
     for i, (image_path, target_path) in enumerate(data_list):
         image_name = image_path.split('/')[-1].split('.')[0]
-        pred = cv2.imread(os.path.join(pred_folder, image_name+'.png'), cv2.IMREAD_GRAYSCALE)
+        pred = cv2.imread(os.path.join(pred_folder, image_name + '.png'), cv2.IMREAD_GRAYSCALE)
         target = cv2.imread(target_path, cv2.IMREAD_GRAYSCALE)
+        #target = id2trainId(target)
         intersection, union, target = intersectionAndUnion(pred, target, classes)
         intersection_meter.update(intersection)
         union_meter.update(union)
         target_meter.update(target)
         accuracy = sum(intersection_meter.val) / (sum(target_meter.val) + 1e-10)
-        logger.info('Evaluating {0}/{1} on image {2}, accuracy {3:.4f}.'.format(i + 1, len(data_list), image_name+'.png', accuracy))
+        logger.info(
+            'Evaluating {0}/{1} on image {2}, accuracy {3:.4f}.'.format(i + 1, len(data_list), image_name + '.png',
+                                                                        accuracy))
 
     iou_class = intersection_meter.sum / (union_meter.sum + 1e-10)
     accuracy_class = intersection_meter.sum / (target_meter.sum + 1e-10)
@@ -256,7 +310,8 @@ def cal_acc(data_list, pred_folder, classes, names):
 
     logger.info('Eval result: mIoU/mAcc/allAcc {:.4f}/{:.4f}/{:.4f}.'.format(mIoU, mAcc, allAcc))
     for i in range(classes):
-        logger.info('Class_{} result: iou/accuracy {:.4f}/{:.4f}, name: {}.'.format(i, iou_class[i], accuracy_class[i], names[i]))
+        logger.info('Class_{} result: iou/accuracy {:.4f}/{:.4f}, name: {}.'.format(i, iou_class[i], accuracy_class[i],
+                                                                                    names[i]))
 
 
 if __name__ == '__main__':

@@ -19,6 +19,7 @@ from tensorboardX import SummaryWriter
 
 from util import dataset, transform, config
 from util.util import AverageMeter, poly_learning_rate, intersectionAndUnionGPU, find_free_port
+from collections import OrderedDict
 
 cv2.ocl.setUseOpenCL(False)
 cv2.setNumThreads(0)
@@ -162,8 +163,15 @@ def main_worker(gpu, ngpus_per_node, argss):
         if os.path.isfile(args.weight):
             if main_process():
                 logger.info("=> loading weight '{}'".format(args.weight))
-            checkpoint = torch.load(args.weight)
-            model.load_state_dict(checkpoint['state_dict'])
+            #checkpoint = torch.load(args.weight)
+            #model.load_state_dict(checkpoint[torch.load('state_dict')])
+            checkpoint = torch.load('initmodel/resnet50_v2.pth')
+            new_state_dict = OrderedDict()
+            for k, v in  checkpoint.items():
+                name = k[7:]
+                new_state_dict[name] = v
+            model = nn.DataParallel(model)
+            model.load_state_dict(new_state_dict, strict=False)
             if main_process():
                 logger.info("=> loaded weight '{}'".format(args.weight))
         else:

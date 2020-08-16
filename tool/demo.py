@@ -10,7 +10,7 @@ import torch.nn.functional as F
 import torch.nn.parallel
 import torch.utils.data
 
-from util import config
+from util import config, dataset, transform
 from util.util import colorize
 
 cv2.ocl.setUseOpenCL(False)
@@ -18,9 +18,9 @@ cv2.ocl.setUseOpenCL(False)
 
 def get_parser():
     parser = argparse.ArgumentParser(description='PyTorch Semantic Segmentation')
-    parser.add_argument('--config', type=str, default='config/ade20k/ade20k_pspnet50.yaml', help='config file')
-    parser.add_argument('--image', type=str, default='figure/demo/ADE_val_00001515.jpg', help='input image')
-    parser.add_argument('opts', help='see config/ade20k/ade20k_pspnet50.yaml for all options', default=None, nargs=argparse.REMAINDER)
+    parser.add_argument('--config', type=str, default='config/cityscapes/cityscapes_pspnet18.yaml', help='config file')
+    parser.add_argument('--image', type=str, default='figure/demo/cityscapes.jpg', help='input image')
+    parser.add_argument('opts', help='see config/cityscapes/cityscapes_pspnet18.yaml for all options', default=None, nargs=argparse.REMAINDER)
     args = parser.parse_args()
     assert args.config is not None
     cfg = config.load_cfg_from_cfg_file(args.config)
@@ -83,7 +83,7 @@ def main():
     colors = np.loadtxt(args.colors_path).astype('uint8')
 
     if args.arch == 'psp':
-        from model.pspnet import PSPNet
+        from model.pspnet18 import PSPNet
         model = PSPNet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, pretrained=False)
         # My code
         #model = PSPNet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, pretrained=True)
@@ -100,7 +100,7 @@ def main():
         logger.info("=> loading checkpoint '{}'".format(args.model_path))
         checkpoint = torch.load(args.model_path)
         # My code
-        #model_path = './initmodel/resnet18-v2.pth'
+        #model_path = './initmodel/resnet18_v2.pth'
         #model.load_state_dict(torch.load(model_path), strict=False)
         # My code
         model.load_state_dict(checkpoint['state_dict'], strict=False)

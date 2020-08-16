@@ -52,12 +52,11 @@
 
 # OSX dir files
 .DS_Store
-
+exp/
 # personal
 *.log
 *.pth
 *.caffemodel
-exp/
 summary/
 __pycache__/
 # data/
@@ -67,11 +66,14 @@ back/
 *.log
 *.pth
 events*
-config/
 dataset/
 *.ninja_deps
 *.ninja_log
 *.ninja
-*.yaml
 slurm*
 initmodel
+config/
+*.yaml
+target_train/
+target_val/
+testing/
