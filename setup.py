@@ -12,7 +12,7 @@ images = np.empty(len(dataset), dtype = object)
 count = 1
 
 # Iterate all Training Images
-
+for n in range(0, len(dataset)):
     # Read image
     images[n] = cv2.imread(join(annotation_images_path,dataset[n]),-1)
  
