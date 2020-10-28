@@ -24,7 +24,7 @@ print(sys.path)
 
 def get_parser():
     parser = argparse.ArgumentParser(description='PyTorch Semantic Segmentation')
-    parser.add_argument('--config', type=str, default='config/cityscapes/cityscapes_pspnet18.yaml',
+    parser.add_argument('--config', type=str, default='config/ade20k/ade20k_pspnet18.yaml',
                         help='config file')
     parser.add_argument('opts', help='see config/cityscapes/cityscapes_pspnet18.yaml for all options', default=None,
                         nargs=argparse.REMAINDER)
