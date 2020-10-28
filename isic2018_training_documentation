@@ -1,0 +1,3 @@
+First experiment: single pspnet50, original dataset, pretrained model = True, train crop: 305 x 305, test crop = 713 x 713 batch size = 16 
+training result (worker = 16) = [2020-10-29 03:33:03,937 INFO train.py line 347 12632] Train result at epoch [200/200]: mIoU/mAcc/allAcc 0.8545/0.9112/0.9354.
+validation result (worker = 8)= 

@@ -130,7 +130,7 @@ if __name__ == '__main__':
     import os
     import time
     os.environ["CUDA_VISIBLE_DEVICES"] = '0'
-    input = torch.rand(1, 3, 1024, 2048).cuda()
+    input = torch.rand(4, 3, 473, 473).cuda()
     model = PSPNet(layers=18, bins=(1, 2, 3, 6), dropout=0.1, classes=19, zoom_factor=1, use_ppm=True,
                    pretrained=True).cuda()
 

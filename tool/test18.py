@@ -15,11 +15,11 @@ from util import dataset, transform, config
 from util.util import AverageMeter, intersectionAndUnion, check_makedirs,colorize
 
 cv2.ocl.setUseOpenCL(False)
-import sys
+# import sys
 
-if '/hardware/yifanliu/models/research/deeplab' in sys.path:
-    sys.path.remove('/hardware/yifanliu/models/research/deeplab')
-print(sys.path)
+# if '/hardware/yifanliu/models/research/deeplab' in sys.path:
+#     sys.path.remove('/hardware/yifanliu/models/research/deeplab')
+# print(sys.path)
 
 
 def get_parser():

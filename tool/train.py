@@ -121,7 +121,7 @@ def main_worker(gpu, ngpus_per_node, argss):
 
     criterion = nn.CrossEntropyLoss(ignore_index=args.ignore_label)
     if args.arch == 'psp':
-        from model.pspnet import PSPNet
+        from model.pspnet18 import PSPNet
         model = PSPNet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, criterion=criterion)
         modules_ori = [model.layer0, model.layer1, model.layer2, model.layer3, model.layer4]
         modules_new = [model.ppm, model.cls, model.aux]
@@ -163,9 +163,9 @@ def main_worker(gpu, ngpus_per_node, argss):
         if os.path.isfile(args.weight):
             if main_process():
                 logger.info("=> loading weight '{}'".format(args.weight))
-            #checkpoint = torch.load(args.weight)
-            #model.load_state_dict(checkpoint[torch.load('state_dict')])
-            checkpoint = torch.load('initmodel/resnet50_v2.pth')
+            checkpoint = torch.load(args.weight)
+            model.load_state_dict(checkpoint[torch.load('state_dict')])
+            # checkpoint = torch.load('initmodel/resnet50_v2.pth')
             new_state_dict = OrderedDict()
             for k, v in  checkpoint.items():
                 name = k[7:]
