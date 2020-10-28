@@ -62,5 +62,5 @@ TEST:
   test_gpu: [0]
   model_path: exp/isic2018/pspnet50/model/train_epoch_200.pth  # evaluation model path
   save_folder: exp/isic2018/pspnet50/result/epoch_200/val/ss  # results save folder
-  colors_path: data/isic2018/cityscapes_colors.txt  # path of dataset colors
-  names_path: data/isic2018/cityscapes_names.txt  # path of dataset category names
+  colors_path: data/isic2018/isic2018_colors.txt  # path of dataset colors
+  names_path: data/isic2018/isic2018_names.txt  # path of dataset category names
