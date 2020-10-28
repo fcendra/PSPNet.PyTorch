@@ -72,8 +72,3 @@ dataset/
 *.ninja
 slurm*
 initmodel
-config/
-*.yaml
-target_train/
-target_val/
-testing/

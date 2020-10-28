@@ -129,32 +129,11 @@ class PSPNet(nn.Module):
 if __name__ == '__main__':
     import os
     import time
-    os.environ["CUDA_VISIBLE_DEVICES"] = '0, 1'
+    os.environ["CUDA_VISIBLE_DEVICES"] = '0'
     input = torch.rand(1, 3, 1024, 2048).cuda()
     model = PSPNet(layers=18, bins=(1, 2, 3, 6), dropout=0.1, classes=19, zoom_factor=1, use_ppm=True,
-                   pretrained=False).cuda()
+                   pretrained=True).cuda()
 
     print(model)
     output = model(input)
     print('PSPNet', output.size())
-    #
-    # model_dict = model.state_dict()
-    # paras = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    # print(paras)
-    # model.eval()
-    # print(model)
-    # sum_time = 0
-    # for i in range(20):
-    #     input = torch.rand(1, 3, 720, 960).cuda()
-    #     start = time.time()
-    #     result = model(input)
-    #     torch.cuda.synchronize()
-    #     end = time.time()
-    #     if i > 0:
-    #         sum_time = sum_time + end - start
-    #     # print(sum)
-    #     print(end - start)
-    # avg = sum_time / 19
-    # print(avg)
-    # output = model(input)
-    # print('PSPNet', output['logits'].size())
