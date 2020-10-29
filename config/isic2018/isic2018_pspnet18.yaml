@@ -32,7 +32,7 @@ TRAIN:
   save_freq: 1
   save_path: exp/isic2018/pspnet18/model
   weight:  # path to initial weight (default: none)
-  resume:   # path to latest checkpoint (default: none)
+  resume: exp/isic2018/pspnet18/model/train_epoch_200.pth  # path to latest checkpoint (default: none)
   evaluate: False  # evaluate on validation set, extra gpu memory needed and small batch_size_val is recommend
 
 Distributed:
