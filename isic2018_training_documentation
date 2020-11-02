@@ -11,3 +11,10 @@ Second experiment:  single pspnet18, original dataset, pretrained model = True, 
                     validation result (workers = 8) =    [2020-10-29 11:56:00,543 INFO test.py line 257 32497] Eval result: mIoU/mAcc/allAcc 0.8046/0.8730/0.9089.
                                                          [2020-10-29 11:56:00,543 INFO test.py line 259 32497] Class_0 result: iou/accuracy 0.8791/0.9718, name: void.
                                                          [2020-10-29 11:56:00,543 INFO test.py line 259 32497] Class_1 result: iou/accuracy 0.7300/0.7742, name: melanoma.
+
+Third experiment:   single pspnet50, resized dataset, pretrained model = True, train crop: 305 x 305, test crop = 497 x 497 batch size = 16 
+
+
+
+
+Fourth experiment:   single pspnet18, resized dataset, pretrained model = True, train crop: 305 x 305, test crop = 497 x 497 batch size = 16 
