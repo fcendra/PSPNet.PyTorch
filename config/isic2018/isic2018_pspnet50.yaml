@@ -51,9 +51,9 @@ TEST:
   split: val  # split in [train, val and test]
   base_size: 2048
   #base_size: 1024  # based size for scaling
-  test_h: 713
+  test_h: 497
   #test_h: 337
-  test_w: 713
+  test_w: 497
   #test_w: 337
   scales: [1.0]  # evaluation scales, ms as [0.5, 0.75, 1.0, 1.25, 1.5, 1.75]
   has_prediction: False  # has prediction already or not

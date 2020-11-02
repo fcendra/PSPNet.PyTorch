@@ -18,7 +18,7 @@ TRAIN:
   ignore_label: 255
   aux_weight: 0.4
   train_gpu: [0]
-  workers: 8  # data loader workers
+  workers: 16  # data loader workers
   batch_size: 16  # batch size for training
   batch_size_val: 8  # batch size for validation during training, memory and speed tradeoff
   base_lr: 0.01
@@ -32,7 +32,7 @@ TRAIN:
   save_freq: 1
   save_path: exp/isic2018/pspnet18/model
   weight:  # path to initial weight (default: none)
-  resume: exp/isic2018/pspnet18/model/train_epoch_200.pth  # path to latest checkpoint (default: none)
+  resume:  # path to latest checkpoint (default: none)
   evaluate: False  # evaluate on validation set, extra gpu memory needed and small batch_size_val is recommend
 
 Distributed:
@@ -46,8 +46,8 @@ TEST:
   test_list: dataset/isic2018/list/fine_val.txt
   split: val  # split in [train, val and test]
   base_size: 2048  # based size for scaling
-  test_h: 713
-  test_w: 713
+  test_h: 497
+  test_w: 497
   scales: [1.0]  # evaluation scales, ms as [0.5, 0.75, 1.0, 1.25, 1.5, 1.75]
   has_prediction: False  # has prediction already or not
   index_start: 0  # evaluation start index in list

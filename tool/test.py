@@ -97,7 +97,7 @@ def main():
 
     if not args.has_prediction:
         if args.arch == 'psp':
-            from model.pspnet18 import PSPNet
+            from model.pspnet import PSPNet
             model = PSPNet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, pretrained=False)
             # My code
             #model = PSPNet(layers=args.layers, classes=args.classes, zoom_factor=args.zoom_factor, pretrained=True)
