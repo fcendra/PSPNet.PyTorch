@@ -12,8 +12,8 @@ TRAIN:
   train_w: 305
   scale_min: 0.5  # minimum random scale
   scale_max: 1.5  # maximum random scale
-  rotate_min: -10  # minimum random rotate
-  rotate_max: 10  # maximum random rotate
+  rotate_min: -5  # minimum random rotate
+  rotate_max: 5  # maximum random rotate
   zoom_factor: 8  # zoom factor for final prediction during training, be in [1, 2, 4, 8]
   ignore_label: 255
   aux_weight: 0.4
