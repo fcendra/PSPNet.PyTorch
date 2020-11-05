@@ -10,8 +10,8 @@ TRAIN:
   sync_bn: True  # adopt syncbn or not
   train_h: 305
   train_w: 305
-  scale_min: 0.25  # minimum random scale
-  scale_max: 1.0  # maximum random scale
+  scale_min: 0.5  # minimum random scale
+  scale_max: 1.5  # maximum random scale
   rotate_min: -10  # minimum random rotate
   rotate_max: 10  # maximum random rotate
   zoom_factor: 8  # zoom factor for final prediction during training, be in [1, 2, 4, 8]
@@ -45,9 +45,9 @@ Distributed:
 TEST:
   test_list: dataset/isic2018/list/fine_val.txt
   split: val  # split in [train, val and test]
-  base_size: 2048  # based size for scaling
-  test_h: 497
-  test_w: 497
+  base_size: 500  # based size for scaling
+  test_h: 305
+  test_w: 305
   scales: [1.0]  # evaluation scales, ms as [0.5, 0.75, 1.0, 1.25, 1.5, 1.75]
   has_prediction: False  # has prediction already or not
   index_start: 0  # evaluation start index in list
