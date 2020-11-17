@@ -103,3 +103,39 @@ Fifthteenth experiment:   single pspnet50, resized dataset, pretrained model = T
                                                          [2020-11-10 07:33:52,145 INFO test.py line 259 12380] Class_0 result: iou/accuracy 0.9282/0.9606, name: void.
                                                          [2020-11-10 07:33:52,145 INFO test.py line 259 12380] Class_1 result: iou/accuracy 0.8245/0.9091, name: melanoma.
 
+sixteenth experiment:   single pspnet18, original dataset, pretrained model = True, train crop: 473 x 473, test crop = 713 x 713 batch size = 16 (scale = [0.5,1.5]) (rotation = [-10, 10])
+                    training result (workers = 16) =     [2020-11-11 18:39:54,688 INFO train.py line 347 7957] Train result at epoch [200/200]: mIoU/mAcc/allAcc 0.8922/0.9388/0.9523.
+
+                    validation result (workers = 8) =    [2020-11-11 21:11:31,134 INFO test.py line 257 10146] Eval result: mIoU/mAcc/allAcc 0.8496/0.9213/0.9282.
+                                                         [2020-11-11 21:11:31,134 INFO test.py line 259 10146] Class_0 result: iou/accuracy 0.8993/0.9403, name: void.
+                                                         [2020-11-11 21:11:31,134 INFO test.py line 259 10146] Class_1 result: iou/accuracy 0.7999/0.9022, name: melanoma.
+
+seventeenth experiment:   kdnet teacher: pspnet50, student: pspnet18, temperature = 4., alpha = 0.4, resized dataset, pretrained model = True, train crop: 305 x 305, test crop = 305 x 305 batch size = 16 (scale = [0.5,1.5]) (rotation = [-10, 10])
+                    training result (workers = 16) =     [2020-11-16 07:59:57,200 INFO train.py line 348 11858] Train result at epoch [200/200]: mIoU/mAcc/allAcc 0.9346/0.9651/0.9700.
+
+                    validation result (workers = 16) =   [2020-11-16 08:00:59,809 INFO test.py line 255 11955] Eval result: mIoU/mAcc/allAcc 0.8671/0.9334/0.9414.
+                                                         [2020-11-16 08:00:59,809 INFO test.py line 257 11955] Class_0 result: iou/accuracy 0.9215/0.9515, name: void.
+                                                         [2020-11-16 08:00:59,809 INFO test.py line 257 11955] Class_1 result: iou/accuracy 0.8126/0.9154, name: melanoma.
+
+eightteenth experiment:   kdnet teacher: pspnet50, student: pspnet18, temperature = 8., alpha = 0.4, resized dataset, pretrained model = True, train crop: 305 x 305, test crop = 305 x 305 batch size = 16 (scale = [0.5,1.5]) (rotation = [-10, 10])
+                    training result (workers = 16) =     [2020-11-17 05:02:04,802 INFO train.py line 348 397] Train result at epoch [200/200]: mIoU/mAcc/allAcc 0.9262/0.9599/0.9662.
+
+                    validation result (workers = 16) =   [2020-11-17 05:03:08,485 INFO test.py line 255 506] Eval result: mIoU/mAcc/allAcc 0.8696/0.9318/0.9430.
+                                                         [2020-11-17 05:03:08,485 INFO test.py line 257 506] Class_0 result: iou/accuracy 0.9239/0.9571, name: void.
+                                                         [2020-11-17 05:03:08,485 INFO test.py line 257 506] Class_1 result: iou/accuracy 0.8153/0.9064, name: melanoma.
+
+nineteenth experiment:   kdnet teacher: pspnet50, student: pspnet18, temperature = 10., alpha = 0.4, resized dataset, pretrained model = True, train crop: 305 x 305, test crop = 305 x 305 batch size = 16 (scale = [0.5,1.5]) (rotation = [-10, 10])
+                    training result (workers = 16) =     [2020-11-16 00:03:02,143 INFO train.py line 348 27813] Train result at epoch [200/200]: mIoU/mAcc/allAcc 0.9335/0.9642/0.9694.
+
+                    validation result (workers = 16) =   [2020-11-16 00:04:06,564 INFO test.py line 255 27469] Eval result: mIoU/mAcc/allAcc 0.8719/0.9347/0.9440.
+                                                         [2020-11-16 00:04:06,564 INFO test.py line 257 27469] Class_0 result: iou/accuracy 0.9249/0.9555, name: void.
+                                                         [2020-11-16 00:04:06,564 INFO test.py line 257 27469] Class_1 result: iou/accuracy 0.8189/0.9138, name: melanoma.
+
+twentieth experiment:   kdnet teacher: pspnet50, student: pspnet18, temperature = 10., alpha = 0.9, resized dataset, pretrained model = True, train crop: 305 x 305, test crop = 305 x 305 batch size = 16 (scale = [0.5,1.5]) (rotation = [-10, 10])
+                    training result (workers = 16) =     [2020-11-17 12:23:21,303 INFO train.py line 348 12881] Train result at epoch [200/200]: mIoU/mAcc/allAcc 0.9475/0.9726/0.9760.
+
+                    validation result (workers = 16) =   [2020-11-17 12:24:25,863 INFO test.py line 255 16606] Eval result: mIoU/mAcc/allAcc 0.8725/0.9313/0.9447.
+                                                         [2020-11-17 12:24:25,863 INFO test.py line 257 16606] Class_0 result: iou/accuracy 0.9262/0.9613, name: void.
+                                                         [2020-11-17 12:24:25,863 INFO test.py line 257 16606] Class_1 result: iou/accuracy 0.8188/0.9014, name: melanoma.
+
+
